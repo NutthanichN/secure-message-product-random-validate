@@ -1,5 +1,6 @@
 package ku.message.controller;
 
+import ku.message.dto.SignupDto;
 import ku.message.model.User;
 import ku.message.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class SignupController {
     }
 
     @PostMapping()
-    public String signupUser(@ModelAttribute User user, Model model) {
+    public String signupUser(@ModelAttribute SignupDto user, Model model) {
         String signupError = null;
 
         if (!userService.isUsernameAvailable(user.getUsername())) {
@@ -31,13 +32,7 @@ public class SignupController {
         }
 
         if (signupError == null) {
-            int rowsAdded = userService.createUser(user);
-            if (rowsAdded < 0) {
-                signupError = "There was an error signing you up. Please try again.";
-            }
-        }
-
-        if (signupError == null) {
+            userService.createUser(user);
             model.addAttribute("signupSuccess", true);
         } else {
             model.addAttribute("signupError", signupError);
